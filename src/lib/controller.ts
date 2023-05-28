@@ -28,8 +28,8 @@ export class Controller {
     // Middleware for logging requests
     this.app.use(this.logger);
 
-    // Middleware for parsing JSON
-    this.app.use(express.json());
+    // Middleware for parsing JSON, limit to 2mb vs 100K for K8s compatibility
+    this.app.use(express.json({ limit: "2mb" }));
 
     // Health check endpoint
     this.app.get("/healthz", this.healthz);
@@ -53,10 +53,24 @@ export class Controller {
     }
 
     // Create HTTPS server
-    const server = https.createServer(options, this.app).listen(port, () => {
+    const server = https.createServer(options, this.app).listen(port);
+
+    // Handle server listening event
+    server.on("listening", () => {
       console.log(`Server listening on port ${port}`);
       // Track that the server is running
       this.running = true;
+    });
+
+    // Handle EADDRINUSE errors
+    server.on("error", (e: { code: string }) => {
+      if (e.code === "EADDRINUSE") {
+        console.log("Address in use, retrying...");
+        setTimeout(() => {
+          server.close();
+          server.listen(port);
+        }, 2000);
+      }
     });
 
     // Listen for the SIGTERM signal and gracefully close the server
