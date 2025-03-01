@@ -1,0 +1,16 @@
+kind: ZarfPackageConfig
+metadata:
+  name: pepr-static-test
+  description: 'Pepr Module: A test module for Pepr'
+  url: https://github.com/defenseunicorns/pepr
+  version: 0.0.1
+components:
+  - name: module
+    required: true
+    images:
+      - pepr:dev
+    manifests:
+      - name: module
+        namespace: pepr-system
+        files:
+          - pepr-module-static-test.yaml

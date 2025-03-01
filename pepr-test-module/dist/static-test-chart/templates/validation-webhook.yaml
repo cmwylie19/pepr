@@ -1,0 +1,48 @@
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingWebhookConfiguration
+metadata:
+  name: {{ .Values.uuid }}
+webhooks:
+  - name: {{ .Values.uuid }}.pepr.dev
+    admissionReviewVersions:
+      - v1
+      - v1beta1
+    clientConfig:
+      caBundle: >-
+        LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tDQpNSUlDdERDQ0FaeWdBd0lCQWdJQkFUQU5CZ2txaGtpRzl3MEJBUXNGQURBY01Sb3dHQVlEVlFRREV4RlFaWEJ5DQpJRVZ3YUdWdFpYSmhiQ0JEUVRBZUZ3MHlOVEF6TURFd01ETTVOVGhhRncweU5qQXpNREV3TURNNU5UaGFNQUF3DQpnZ0VpTUEwR0NTcUdTSWIzRFFFQkFRVUFBNElCRHdBd2dnRUtBb0lCQVFDcEpOanU2TElrOGNER004TDQvSEx6DQozWE9xTlJLMXIxWkNSelFBZmhPRWdtN3NnbzlveW1KV1cxUXU2eko1SkZNN09NdDFvMGhSKzJzZjBuY0VyL0tJDQpMRndmKytaQVlIVjZKayt1dzJsWEZFTncyaWxka1ZPcm51ZE5XMjRxd0pBa250S1JIMGF1RDJ3eXdyQ1pZc0VvDQpHOTR6WmxXVWpkMnpxdFIrdjQ0ZUxCelhnWGgyR0NpeWNiYzV1UlcwNTNrdWlXY21XVnU2SFB6NzlyTkZsSUY4DQp6enpLQkRkOGU1TGh2NE93aFIwcXZSNmxhY2NkNG9pNGZwVE5ENEJGak5SSGFXR0o1NG1CeXdYMWZhc3lSRW1CDQpOVGRZRWpHUU5iaHkweDNBRFlwSE56dHY4bzZjaC9TVkI0VVNsVHZMalpxbi9GOG1IYkFBcDc1UGQxeWVTK0t2DQpBZ01CQUFHakhUQWJNQXdHQTFVZEV3UUZNQU1CQWY4d0N3WURWUjBQQkFRREFnTDBNQTBHQ1NxR1NJYjNEUUVCDQpDd1VBQTRJQkFRQWtrUHVLWG5MVGx0bGEwYnFwdlJOQ1o3VzArdnhLRTBETkdrNXJ6RlRRSE5rMktiUUVQbmhuDQpJZXRoQjNiZmltYnh0UXlHTVo5NWhOSUhkMXFWa1pIYUZnYmdsT3Zza3RIRE42Q3pUN0tQMlhBbHNLTC9SS0wwDQpwTy9LTFJmaWhGcEdYQUViRDU3Rm5oZk1lTEJvM1VveDk1VGdyelJQcmdrQUJZckNDcWRhbWZia0hxcjV0UW1BDQpBYnZJTWJMZXppUlFBbWhSWTRTdGR5SFdwdHNQTXpWL0hHL1d6ZWswR3ZzaUdmZ05LWmNmUmxWQzY1enJBVWw4DQpyVVYrL0xFbGxBcElpVDZNK3IwVENUUmhsbktaSnBPckN1QkJhYXFrNGpzd0JIV2pua2VCLzRGakRoUU5rUWVZDQpUS2Q2YnNvZjVrdTl0RjJrcVI5RWV1RXQzcjU0VkY5eQ0KLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQ0K
+      service:
+        name: {{ .Values.uuid }}
+        namespace: pepr-system
+        path: >-
+          /validate/195e1e57b784d7a80fbffa4ce229e5af14374eacd3e588dcf18db3b2e3f3abd3
+    failurePolicy: {{ .Values.admission.failurePolicy }}
+    matchPolicy: Equivalent
+    timeoutSeconds: {{ .Values.admission.webhookTimeout }}
+    namespaceSelector:
+      matchExpressions:
+        - key: kubernetes.io/metadata.name
+          operator: NotIn
+          values:
+            - kube-system
+            - pepr-system
+            {{- range .Values.additionalIgnoredNamespaces }}
+            - {{ . }}
+            {{- end }}
+    rules:
+      - apiGroups:
+          - ''
+        apiVersions:
+          - v1
+        operations:
+          - CREATE
+        resources:
+          - configmaps
+      - apiGroups:
+          - ''
+        apiVersions:
+          - v1
+        operations:
+          - DELETE
+        resources:
+          - configmaps
+    sideEffects: None

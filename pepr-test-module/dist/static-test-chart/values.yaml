@@ -1,0 +1,147 @@
+imagePullSecrets: []
+additionalIgnoredNamespaces: []
+rbac:
+  - apiGroups:
+      - '*'
+    resources:
+      - '*'
+    verbs:
+      - 'create'
+      - 'delete'
+      - 'get'
+      - 'list'
+      - 'patch'
+      - 'update'
+      - 'watch'
+secrets:
+  apiPath: 'ZjY5NTNhMzRlZjI2ZGU3NzVlYzBkZWRkOGUzOGFjYWVhM2Y0MDE1ZmQyNzg5ZTAyYTZlODYxZmVmMDQ2ODA1OA=='
+hash: 'c47f3cd607c8c939d6b18bbe73998b8540b0d0586573117a2f78f6524a058483'
+namespace:
+  annotations: {}
+  labels:
+    pepr.dev: ''
+uuid: 'pepr-static-test'
+admission:
+  terminationGracePeriodSeconds: 5
+  failurePolicy: 'Ignore'
+  webhookTimeout: 10
+  env:
+    - name: 'PEPR_PRETTY_LOG'
+      value: 'false'
+    - name: 'LOG_LEVEL'
+      value: 'info'
+    - name: 'MY_CUSTOM_VAR'
+      value: 'example-value'
+    - name: 'ZARF_VAR'
+      value: '###ZARF_VAR_THING###'
+  envFrom: []
+  image: 'pepr:dev'
+  annotations:
+    pepr.dev/description: 'A test module for Pepr'
+  labels:
+    app: 'pepr-static-test'
+    pepr.dev/controller: 'admission'
+    pepr.dev/uuid: 'static-test'
+  securityContext:
+    runAsUser: 65532
+    runAsGroup: 65532
+    runAsNonRoot: true
+    fsGroup: 65532
+  readinessProbe:
+    httpGet:
+      path: '/healthz'
+      port: 3000
+      scheme: 'HTTPS'
+    initialDelaySeconds: 10
+  livenessProbe:
+    httpGet:
+      path: '/healthz'
+      port: 3000
+      scheme: 'HTTPS'
+    initialDelaySeconds: 10
+  resources:
+    requests:
+      memory: '256Mi'
+      cpu: '200m'
+    limits:
+      memory: '512Mi'
+      cpu: '500m'
+  containerSecurityContext:
+    runAsUser: 65532
+    runAsGroup: 65532
+    runAsNonRoot: true
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - 'ALL'
+  podAnnotations: {}
+  nodeSelector: {}
+  tolerations: []
+  extraVolumeMounts: []
+  extraVolumes: []
+  affinity: {}
+  serviceMonitor:
+    enabled: false
+    labels: {}
+    annotations: {}
+watcher:
+  terminationGracePeriodSeconds: 5
+  env:
+    - name: 'PEPR_PRETTY_LOG'
+      value: 'false'
+    - name: 'LOG_LEVEL'
+      value: 'info'
+    - name: 'MY_CUSTOM_VAR'
+      value: 'example-value'
+    - name: 'ZARF_VAR'
+      value: '###ZARF_VAR_THING###'
+  envFrom: []
+  image: 'pepr:dev'
+  annotations:
+    pepr.dev/description: 'A test module for Pepr'
+  labels:
+    app: 'pepr-static-test-watcher'
+    pepr.dev/controller: 'watcher'
+    pepr.dev/uuid: 'static-test'
+  securityContext:
+    runAsUser: 65532
+    runAsGroup: 65532
+    runAsNonRoot: true
+    fsGroup: 65532
+  readinessProbe:
+    httpGet:
+      path: '/healthz'
+      port: 3000
+      scheme: 'HTTPS'
+    initialDelaySeconds: 10
+  livenessProbe:
+    httpGet:
+      path: '/healthz'
+      port: 3000
+      scheme: 'HTTPS'
+    initialDelaySeconds: 10
+  resources:
+    requests:
+      memory: '256Mi'
+      cpu: '200m'
+    limits:
+      memory: '512Mi'
+      cpu: '500m'
+  containerSecurityContext:
+    runAsUser: 65532
+    runAsGroup: 65532
+    runAsNonRoot: true
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - 'ALL'
+  nodeSelector: {}
+  tolerations: []
+  extraVolumeMounts: []
+  extraVolumes: []
+  affinity: {}
+  podAnnotations: {}
+  serviceMonitor:
+    enabled: false
+    labels: {}
+    annotations: {}
