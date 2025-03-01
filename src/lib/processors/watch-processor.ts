@@ -4,13 +4,23 @@ import Log from "../telemetry/logger";
 import { Binding } from "../types";
 import { Capability } from "../core/capability";
 import { Event } from "../enums";
-import { K8s, KubernetesObject, WatchCfg, WatchEvent, GenericClass } from "kubernetes-fluent-client";
+import {
+  KubernetesObject,
+  WatchCfg,
+  WatchEvent,
+  GenericClass,
+  modelToGroupVersionKind,
+} from "kubernetes-fluent-client";
 import { Queue } from "../core/queue";
 import { WatchPhase, WatcherType } from "kubernetes-fluent-client/dist/fluent/types";
 import { KubernetesListObject } from "kubernetes-fluent-client/dist/types";
 import { filterNoMatchReason } from "../filter/filter";
-import { metricsCollector, MetricsCollectorInstance } from "../telemetry/metrics";
+import { MetricsCollectorInstance } from "../telemetry/metrics";
 import { removeFinalizer } from "../finalizer";
+import type { WatchType } from "./stream-processor";
+import { startWatch } from "./stream-processor";
+import { connect, StringCodec } from "nats";
+const NATS_URL = process.env.NATS_URL || "nats://nats-headless:4222";
 
 // stores Queue instances
 const queues: Record<string, Queue<KubernetesObject>> = {};
@@ -145,29 +155,81 @@ async function runBinding(
       }
     }
   };
+  const matchedKind = binding.kind || modelToGroupVersionKind(binding.model.name);
+  console.log("MATCHEDKIND " + JSON.stringify(matchedKind)); //{kind: 'Namespace', version: 'v1', group: ''}
+  const watchTarget: WatchType = {
+    group: matchedKind.group,
+    version: matchedKind.version,
+    resource: matchedKind.kind,
+    namespace: binding.filters.namespaces.length > 0 ? binding.filters.namespaces[0] : undefined,
+  };
 
-  // Setup the resource watch
-  const watcher = K8s(binding.model, { ...binding.filters, kindOverride: binding.kind }).Watch(async (obj, phase) => {
-    Log.debug(obj, `Watch event ${phase} received`);
+  Log.info(`Setting up watch via NATS for ${JSON.stringify(watchTarget)}`);
 
-    if (binding.isQueue) {
-      const queue = getOrCreateQueue(obj);
-      await queue.enqueue(obj, phase, watchCallback);
+  // 1Request a watch and subscribe to NATS
+  let natsTopic: string | null = null;
+  try {
+    natsTopic = await startWatch(watchTarget);
+    const nc = await connect({ servers: NATS_URL });
+    const sc = StringCodec();
+    if (natsTopic) {
+      const sub = nc.subscribe(natsTopic);
+
+      void (async (): Promise<void> => {
+        try {
+          for await (const m of sub) {
+            const decoded = sc.decode(m.data);
+            const event = JSON.parse(decoded);
+
+            const obj = JSON.parse(event.details);
+
+            const phase: WatchPhase =
+              event.eventType === "ADDED"
+                ? WatchPhase.Added
+                : event.eventType === "MODIFIED"
+                  ? WatchPhase.Modified
+                  : WatchPhase.Deleted;
+            if (binding.isQueue) {
+              const queue = getOrCreateQueue(obj);
+              await queue.enqueue(obj, phase, watchCallback);
+            } else {
+              await watchCallback(obj, phase);
+            }
+          }
+          console.log("subscription closed");
+        } catch (error) {
+          console.error("error", error);
+        }
+      })();
     } else {
-      await watchCallback(obj, phase);
+      throw new Error("Failed to start watch, skipping NATS subscription.");
     }
-  }, watchCfg);
+  } catch (error) {
+    Log.error(`Failed to start watch: ${error}`);
+  }
 
-  // Register event handlers
-  registerWatchEventHandlers(watcher, logEvent, metricsCollector);
+  // // Setup the resource watch
+  // const watcher = K8s(binding.model, { ...binding.filters, kindOverride: binding.kind }).Watch(async (obj, phase) => {
+  //   Log.debug(obj, `Watch event ${phase} received`);
+
+  //   if (binding.isQueue) {
+  //     const queue = getOrCreateQueue(obj);
+  //     await queue.enqueue(obj, phase, watchCallback);
+  //   } else {
+  //     await watchCallback(obj, phase);
+  //   }
+  // }, watchCfg);
+
+  // // Register event handlers
+  // registerWatchEventHandlers(watcher, logEvent, metricsCollector);
 
   // Start the watch
-  try {
-    await watcher.start();
-  } catch (err) {
-    Log.error(err, "Error starting watch");
-    process.exit(1);
-  }
+  // try {
+  //   // await watcher.start();
+  // } catch (err) {
+  //   Log.error(err, "Error starting watch");
+  //   process.exit(1);
+  // }
 }
 
 export function logEvent(event: WatchEvent, message: string = "", obj?: KubernetesObject): void {
