@@ -23,6 +23,6 @@ const deletePod = async (name: string) => {
 When(a.Pod)
   .IsCreatedOrUpdated()
   .InNamespace("pepr-demo")
-  .Reconcile(async instance => {
+  .Watch(async instance => {
     await deletePod(instance.metadata.name);
   });
