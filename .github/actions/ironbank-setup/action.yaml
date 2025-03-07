@@ -80,8 +80,8 @@ runs:
         cp pepr-0.0.0-development.tgz pepr-0.0.0-development.tar.gz
         # Decompress the compressed package to rename package to Pepr
         tar -zxvf pepr-0.0.0-development.tar.gz && mv package pepr && rm pepr-0.0.0-development.tar.gz
-        # Create a package-lock.json
-        cd pepr && npm i && cd ..
+        # Create a package-lock.json && hack/build-template-data.json
+        cd pepr && mkdir hack && cp $PEPR/hack/build-template-data.json hack/ && cp $PEPR/build.mjs . && cp $PEPR/tsconfig.json . && npm i && cd ..
         # Compress the package back to *.tar.gz
         tar -zcvf pepr-0.0.0-development.tar.gz pepr
         mv pepr-0.0.0-development.tgz ${GITHUB_WORKSPACE}/pepr-0.0.0-development.tgz
