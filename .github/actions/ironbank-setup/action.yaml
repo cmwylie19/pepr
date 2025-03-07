@@ -62,7 +62,7 @@ runs:
         git clone https://repo1.dso.mil/dsop/opensource/defenseunicorns/pepr/controller.git
         cd controller
         mv Dockerfile $PEPR/Dockefile.ironbank.amd
-        mv Dockerfile.arm $PEPR/Dockerfile.ironbank.arm
+        mv Dockerfile.arm64 $PEPR/Dockerfile.ironbank.arm
         mv removeScript.js $PEPR/removeScript.js
 
     - name: Install Pepr Dependencies
