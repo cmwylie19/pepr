@@ -50,6 +50,7 @@ jobs:
           timeout_minutes: 6
           command: |
             cd "$PEPR_EXCELLENT_EXAMPLES_PATH"
+            npm ci
             npm run --workspace=${{ matrix.name }} test:e2e -- \
               --image pepr:amd \
               --custom-package ../pepr-0.0.0-development.tgz
