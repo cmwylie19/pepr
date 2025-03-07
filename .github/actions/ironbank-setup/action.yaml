@@ -33,7 +33,7 @@ runs:
       env:
         REGISTRY_USERNAME: ${{ inputs.registry1Username }}
         REGISTRY_PASSWORD: ${{ inputs.registry1Password }}
-      run: echo "${{ env.REGISTRY_PASSWORD }}" | uds zarf tools registry login -u "${{ env.REGISTRY_USERNAME }}" --password-stdin registry1.dso.mil
+      run: echo "${{ env.REGISTRY_PASSWORD }}" | docker login -u "${{ env.REGISTRY_USERNAME }}" --password-stdin registry1.dso.mil
       shell: bash
 
     - name: Clone Pepr
