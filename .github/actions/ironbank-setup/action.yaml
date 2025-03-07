@@ -36,11 +36,11 @@ runs:
       run: echo "${{ env.REGISTRY_PASSWORD }}" | docker login -u "${{ env.REGISTRY_USERNAME }}" --password-stdin registry1.dso.mil
       shell: bash
 
-    # - name: Clone Pepr
-    #   uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-    #   with:
-    #     repository: defenseunicorns/pepr
-    #     path: pepr
+    - name: Clone Pepr
+      uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      with:
+        repository: defenseunicorns/pepr
+        path: pepr
 
     - name: Set Pepr Environment Variable
       shell: bash
