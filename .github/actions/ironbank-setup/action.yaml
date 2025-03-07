@@ -75,7 +75,7 @@ runs:
       shell: bash
       run: |
         cd "$PEPR"
-        docker build --build-arg PEPR_BUILD_VERSION=dev pepr:amd -f Dockerfile.ironbank.amd .
+        docker build --build-arg PEPR_BUILD_VERSION=dev -t pepr:amd -f Dockerfile.ironbank.amd .
         docker build --build-arg PEPR_BUILD_VERSION=dev -t pepr:arm -f Dockerfile.ironbank.arm .
 
     - name: Import Pepr Iron Bank Images into K3d cluster 
