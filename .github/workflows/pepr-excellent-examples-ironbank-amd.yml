@@ -2,7 +2,7 @@ name: E2E - Pepr Excellent Examples - IronBank AMD Image
 
 permissions:
   contents: read
-
+  id-token: write 
 on:
   workflow_dispatch:
   schedule:
