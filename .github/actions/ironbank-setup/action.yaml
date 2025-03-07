@@ -63,7 +63,7 @@ runs:
         cd controller
         mv Dockerfile $PEPR/Dockefile.ironbank.amd
         mv Dockerfile.arm64 $PEPR/Dockerfile.ironbank.arm
-        mv removeScript.js $PEPR/removeScript.js
+        mv removeVersion.js $PEPR/removeVersion.js
 
     - name: Install Pepr Dependencies
       shell: bash
