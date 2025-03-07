@@ -75,18 +75,11 @@ runs:
       shell: bash
       run: |
         cd "$PEPR"
+        npm run build
+        cp pepr-0.0.0-development.tgz pepr-0.0.0-development.tar.gz
+        mv pepr-0.0.0-development.tgz ${GITHUB_WORKSPACE}/pepr-0.0.0-development.tgz
         docker build --build-arg PEPR_BUILD_VERSION=dev -t pepr:amd -f Dockerfile.ironbank.amd .
         docker build --build-arg PEPR_BUILD_VERSION=dev -t pepr:arm -f Dockerfile.ironbank.arm .
-
-    - name: Import Pepr Iron Bank Images into K3d cluster 
-      shell: bash
-      run: |
-        cd "$PEPR"
-        npm run build
-        mv pepr-0.0.0-development.tgz pepr-0.0.0-development.tar.gz
-        mv pepr-0.0.0-development.tgz ${GITHUB_WORKSPACE}/pepr-0.0.0-development.tgz
-        docker build -t pepr:amd -f Dockerfile.ironbank.amd .
-        docker build -t pepr:arm -f Dockerfile.ironbank.arm .
 
     - name: Create K3d Cluster & Import Pepr Iron Bank Images
       shell: bash
