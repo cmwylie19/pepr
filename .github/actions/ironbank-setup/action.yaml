@@ -36,11 +36,11 @@ runs:
       run: echo "${{ env.REGISTRY_PASSWORD }}" | docker login -u "${{ env.REGISTRY_USERNAME }}" --password-stdin registry1.dso.mil
       shell: bash
 
-    - name: Clone Pepr
-      uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-      with:
-        repository: defenseunicorns/pepr
-        path: pepr
+    # - name: Clone Pepr
+    #   uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+    #   with:
+    #     repository: defenseunicorns/pepr
+    #     path: pepr
 
     - name: Set Pepr Environment Variable
       shell: bash
@@ -81,7 +81,7 @@ runs:
         # Decompress the compressed package to rename package to Pepr
         tar -zxvf pepr-0.0.0-development.tar.gz && mv package pepr && rm pepr-0.0.0-development.tar.gz
         # Create a package-lock.json && hack/build-template-data.json
-        cd pepr && mkdir hack && cp $PEPR/hack/build-template-data.json hack/ && cp $PEPR/build.mjs . && cp $PEPR/tsconfig.json . && npm i && cd ..
+        cd pepr && mkdir hack && ls $PEPR && cp $PEPR/hack/build-template-data.json hack/ && cp $PEPR/build.mjs . && cp $PEPR/tsconfig.json . && npm i && cd ..
         # Compress the package back to *.tar.gz
         tar -zcvf pepr-0.0.0-development.tar.gz pepr
         mv pepr-0.0.0-development.tgz ${GITHUB_WORKSPACE}/pepr-0.0.0-development.tgz
