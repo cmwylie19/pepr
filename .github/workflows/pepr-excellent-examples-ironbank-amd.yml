@@ -32,7 +32,7 @@ jobs:
       - name: Set Pepr Environment Variable
         shell: bash
         run: echo "PEPR=${GITHUB_WORKSPACE}/pepr" >> "$GITHUB_ENV"
-        
+
       - name: Clone Pepr Excellent Examples
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
@@ -85,6 +85,7 @@ jobs:
           retry_on: error
           timeout_minutes: 6
           command: |
+            cd $PEPR_EXCELLENT_EXAMPLES_PATH
             docker images
             ls ${GITHUB_WORKSPACE}/pepr-0.0.0-development.tgz
             npm i
