@@ -53,7 +53,10 @@ jobs:
             echo "PWD: $(pwd)"
             ls -la
             echo "Parent DIR contents: $(ls -la ..)"
-            
+            echo "ENV: $(env)"
+            echo "GITHUB_WP: $GITHUB_WORKSPACE"
+            ls -la $GITHUB_WORKSPACE
+
 
             npm i
             npm run --workspace=${{ matrix.name }} test:e2e -- \
