@@ -62,6 +62,10 @@ jobs:
       matrix: ${{ fromJSON(needs.ironbank-setup.outputs.matrix) }}
     steps:
 
+      - name: "install k3d"
+        run: "curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash"
+        shell: bash
+        
       - name: Clone Pepr Excellent Examples
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
@@ -102,7 +106,7 @@ jobs:
             npm i
             npm run --workspace=${{ matrix.name }} test:e2e -- \
               --image pepr:amd \
-              --custom-package ../pepr-0.0.0-development.tgz
+              --custom-package ${GITHUB_WORKSPACE}/pepr-0.0.0-development.tgz
 
       - name: Upload artifacts (troubleshooting)
         uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1 # v4.6.1
