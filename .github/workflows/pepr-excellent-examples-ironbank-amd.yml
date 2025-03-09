@@ -86,6 +86,7 @@ jobs:
           timeout_minutes: 6
           command: |
             cd $PEPR_EXCELLENT_EXAMPLES_PATH
+            ls -la
             docker images
             ls ${GITHUB_WORKSPACE}/pepr-0.0.0-development.tgz
             npm i
