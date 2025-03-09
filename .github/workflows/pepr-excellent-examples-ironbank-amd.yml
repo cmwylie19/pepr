@@ -50,6 +50,11 @@ jobs:
           timeout_minutes: 6
           command: |
             cd "$PEPR_EXCELLENT_EXAMPLES_PATH"
+            echo "PWD: $(pwd)"
+            ls -la
+            echo "Parent DIR contents: $(ls -la ..)"
+            
+
             npm i
             npm run --workspace=${{ matrix.name }} test:e2e -- \
               --image pepr:amd \
