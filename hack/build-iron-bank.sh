@@ -3,8 +3,16 @@
 # Copyright 2024 Defense Unicorns
 # SPDX-License-Identifier: Apache-2.0
 
-set -e  # Exit on error
-set -o pipefail  # Fail if any command in a pipeline fails
+set -e 
+set -o pipefail 
+
+if [[ -z "$1" ]]; then
+  echo "Usage: $0 <GITHUB_WORKSPACE>"
+  exit 1
+fi
+
+export GITHUB_WORKSPACE="$1"
+
 
 # Ensure PEPR environment variable is set
 if [[ -z "$PEPR" ]]; then
