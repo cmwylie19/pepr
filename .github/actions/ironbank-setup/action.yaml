@@ -70,7 +70,7 @@ runs:
       shell: bash
       run:  |
         ls hack
-        ./hack/build-iron-bank.sh
+        ./hack/build-iron-bank.sh "${GITHUB_WORKSPACE}"
       # run: |
       #   cd "$PEPR"
       #   PEPR_AMD_TAR="${GITHUB_WORKSPACE}/pepr-amd-img.tar"
