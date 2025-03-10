@@ -51,7 +51,7 @@ cd ..
 
 # Repackage
 tar -zcvf pepr-0.0.0-development.tar.gz pepr
-mv pepr-0.0.0-development.tgz "$(GITHUB_WORKSPACE)/pepr-0.0.0-development.tgz"
+mv pepr-0.0.0-development.tgz "${GITHUB_WORKSPACE}/pepr-0.0.0-development.tgz"
 
 # Build Docker images
 docker build --build-arg PEPR_BUILD_VERSION=0.0.0 -t pepr:amd -f Dockerfile.ironbank.amd .
