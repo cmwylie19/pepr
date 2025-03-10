@@ -68,7 +68,7 @@ runs:
 
     - name: Build Pepr Iron Bank Images
       shell: bash
-      run: ./hack/build-iron-bank.sh
+      run: ./${PEPR}/hack/build-iron-bank.sh
       # run: |
       #   cd "$PEPR"
       #   PEPR_AMD_TAR="${GITHUB_WORKSPACE}/pepr-amd-img.tar"
