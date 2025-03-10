@@ -23,8 +23,8 @@ fi
 cd "$PEPR"
 
 # Define output image tar paths
-PEPR_AMD_TAR="$(GITHUB_WORKSPACE)/pepr-amd-img.tar"
-PEPR_ARM_TAR="$(GITHUB_WORKSPACE)/pepr-arm-img.tar"
+PEPR_AMD_TAR="$GITHUB_WORKSPACE/pepr-amd-img.tar"
+PEPR_ARM_TAR="$GITHUB_WORKSPACE/pepr-arm-img.tar"
 
 echo "PEPR_AMD_TAR=${PEPR_AMD_TAR}"
 echo "PEPR_ARM_TAR=${PEPR_ARM_TAR}"
