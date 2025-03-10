@@ -15,8 +15,8 @@ fi
 cd "$PEPR"
 
 # Define output image tar paths
-PEPR_AMD_TAR="$(pwd)/pepr-amd-img.tar"
-PEPR_ARM_TAR="$(pwd)/pepr-arm-img.tar"
+PEPR_AMD_TAR="$(GITHUB_WORKSPACE)/pepr-amd-img.tar"
+PEPR_ARM_TAR="$(GITHUB_WORKSPACE)/pepr-arm-img.tar"
 
 echo "PEPR_AMD_TAR=${PEPR_AMD_TAR}"
 echo "PEPR_ARM_TAR=${PEPR_ARM_TAR}"
@@ -43,7 +43,7 @@ cd ..
 
 # Repackage
 tar -zcvf pepr-0.0.0-development.tar.gz pepr
-mv pepr-0.0.0-development.tgz "$(pwd)/pepr-0.0.0-development.tgz"
+mv pepr-0.0.0-development.tgz "$(GITHUB_WORKSPACE)/pepr-0.0.0-development.tgz"
 
 # Build Docker images
 docker build --build-arg PEPR_BUILD_VERSION=0.0.0 -t pepr:amd -f Dockerfile.ironbank.amd .
